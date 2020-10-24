@@ -19,7 +19,7 @@ public class Stack<T> {
     }
 
     public void push(T data) {
-        stack.insert(new LLNode<T>(data));
+        stack.insert(new SLLNode<T>(data));
     }
 
     private T pop(int position) throws Exception {

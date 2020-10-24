@@ -9,9 +9,9 @@ public interface LinkedList<T> {
 
     public abstract void insert(T data);
 
-    public abstract void insert(LLNode<T> newNode, int position) throws Exception;
+    public abstract void insert(SLLNode<T> newNode, int position) throws Exception;
 
-    public abstract void insert(LLNode<T> newNode);
+    public abstract void insert(SLLNode<T> newNode);
 
     public abstract T delete(int position);
 

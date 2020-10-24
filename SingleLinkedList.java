@@ -6,7 +6,7 @@ package DataStructuresPackage;
  */
 public class SingleLinkedList<T> implements LinkedList<T> {
 
-    private LLNode<T> mHead, mTail;// nodes for the head and tail of the linked list
+    private SLLNode<T> mHead, mTail;// nodes for the head and tail of the linked list
     private int mLength;// how many elements are in the linked list
 
     // default Constructor
@@ -25,7 +25,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
     // this method does the heavy lifting, it is this method that is called in all
     // other overloaded versions of insert
     @Override
-    public void insert(LLNode<T> newNode, int position) throws Exception {
+    public void insert(SLLNode<T> newNode, int position) throws Exception {
         // TODO Auto-generated method stub
 
         if (position > getLength())// if the desired position is outside the bounds of the list
@@ -45,8 +45,8 @@ public class SingleLinkedList<T> implements LinkedList<T> {
             setLength(getLength() + 1);// increment length by 1
         } else if (position < getLength()) {// position is somewhere in the middle of the list
             int count = 0;// set a counter to 0
-            LLNode<T> previous = null;// set previous to null
-            LLNode<T> next = getHead();// set next to the head of the list
+            SLLNode<T> previous = null;// set previous to null
+            SLLNode<T> next = getHead();// set next to the head of the list
 
             while (count < position) {// while the count is less than the position
                 if (next == null)
@@ -72,7 +72,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
     public void insert(T data, int position) {
         // TODO Auto-generated method stub
         try {
-            insert(new LLNode<T>(data), position);// attempt to insert data at given position
+            insert(new SLLNode<T>(data), position);// attempt to insert data at given position
         } catch (Exception e) {// catch thrown exception if fails
             System.err.println(e.getMessage());// print fail message
         }
@@ -80,7 +80,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
 
     // default inserts at start of list
     @Override
-    public void insert(LLNode<T> newNode) {
+    public void insert(SLLNode<T> newNode) {
         // TODO Auto-generated method stub
         try {
             this.insert(newNode, 0);// attempt to insert data at given position
@@ -98,7 +98,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
     }
 
     // delete
-    private LLNode<T> delete(int position, LLNode<T> start) throws Exception {
+    private SLLNode<T> delete(int position, SLLNode<T> start) throws Exception {
         if (position > getLength() || position < 0)// checks to see if position is valid
             throw new Exception("ERROR: Invalid Node to Delete: " + position);// throws exception if position is not
                                                                               // valid
@@ -106,7 +106,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
         if (getLength() == 0)// checks if list is empty
             throw new Exception("ERROR: List is Empty");// throws exception if list is empty
 
-        LLNode<T> deleteNode = null;// set deleteNode to null
+        SLLNode<T> deleteNode = null;// set deleteNode to null
         if (position == 0) {// delete item at front of list
             deleteNode = start;// set deleteNode to start
             setHead(deleteNode.getNext());// set the new head
@@ -116,8 +116,8 @@ public class SingleLinkedList<T> implements LinkedList<T> {
         } else if (position < getLength()) {// item is in the middle of the list
             int count = 0;// counter set to 0
             deleteNode = start;// delete node set to start
-            LLNode<T> previous = null, next = deleteNode.getNext();// previous set to null, next set to item after
-                                                                   // deleteNode
+            SLLNode<T> previous = null, next = deleteNode.getNext();// previous set to null, next set to item after
+                                                                    // deleteNode
 
             while (count < position) {// while the position has not been found
                 if (next == null)// if next is null
@@ -134,7 +134,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
             deleteNode.setNext(null);// set deleteNode's next pointer to null ready to be deleted
         } else {// item is at the end
             deleteNode = getTail();// deleteNode set to the tail
-            LLNode<T> previous = start;// previous set to the start
+            SLLNode<T> previous = start;// previous set to the start
 
             while (previous.getNext() != deleteNode)// search for deleteNode should be at the end of the list
             {
@@ -155,7 +155,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
         // TODO Auto-generated method stub
         T data = null;// data set to null
         try {// attempt to delete the item at position
-            LLNode<T> deleteNode = delete(position, getHead());// find the delete node
+            SLLNode<T> deleteNode = delete(position, getHead());// find the delete node
             data = deleteNode.getData();// get data from delete node
             deleteNode = null;// delete the node
             setLength(getLength() - 1);// decrement the length by 1
@@ -178,7 +178,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
         if (position > getLength() || position < 0)// if the position is invalid
             throw new Exception("ERROR: Invalid Position: " + position);// throw an exception
         int count = 0;// set counter
-        LLNode<T> node = getHead();// node with data
+        SLLNode<T> node = getHead();// node with data
         while (count < position) {// while count is less than the desired position
             if (node == null)// if node is null
                 throw new NullPointerException(
@@ -207,20 +207,20 @@ public class SingleLinkedList<T> implements LinkedList<T> {
         return this.mLength;
     }
 
-    private LLNode<T> getHead() {
+    private SLLNode<T> getHead() {
         return this.mHead;
     }
 
-    private LLNode<T> getTail() {
+    private SLLNode<T> getTail() {
         return this.mTail;
     }
 
     // SETTERS
-    private void setHead(LLNode<T> newHead) {
+    private void setHead(SLLNode<T> newHead) {
         this.mHead = newHead;
     }
 
-    private void setTail(LLNode<T> newTail) {
+    private void setTail(SLLNode<T> newTail) {
         this.mTail = newTail;
     }
 
@@ -239,7 +239,7 @@ public class SingleLinkedList<T> implements LinkedList<T> {
     @Override
     public String toString() {
         String returnString = "[";// start of return string
-        LLNode<T> start = getHead();// start at the head
+        SLLNode<T> start = getHead();// start at the head
         while (start != null) {// read the entire list
             returnString += " " + start.getData().toString() + " ";// append data to the string
             start = start.getNext();// get the next item
