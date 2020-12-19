@@ -1,54 +1,47 @@
 package DataStructuresPackage;
 
 public class Stack<T> {
-    private final SingleLinkedList<T> stack;
+    private final SingleLinkedList<T> mStack;
 
+    // CONSTRUCTOR
     public Stack() {
-        this.stack = new SingleLinkedList<T>();
+        this.mStack = new SingleLinkedList<T>();
     }
 
     public Stack(T data) {
-        this.stack = new SingleLinkedList<T>(data);
+        this.mStack = new SingleLinkedList<T>(data);
     }
 
-    public Stack(T[] data) {
-        this.stack = new SingleLinkedList<T>();
-        for (int i = data.length - 1; i >= 0; i--) {
-            push(data[i]);
-        }
-    }
-
+    // BASIC OPERATIONS
     public void push(T data) {
-        stack.insert(new SLLNode<T>(data));
-    }
-
-    private T pop(int position) throws Exception {
-        if (stack.isEmpty())
-            throw new Exception("Stack is empty");
-        return stack.delete();
+        mStack.insert(data);
     }
 
     public T pop() {
-        T data = null;
 
-        try {
-            data = pop(0);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        if (isEmpty()) {
+            System.err.println("ERROR: Stack Is Empty");
+            return null;
         }
-        return data;
+
+        return mStack.delete();
     }
 
+    // HELPER METHODS
     public T peek() {
-        return stack.peek();
+        if (isEmpty()) {
+            System.err.println("ERROR: Stack Is Empty");
+            return null;
+        }
+        return mStack.peek();
     }
 
     public boolean isEmpty() {
-        return stack.isEmpty();
+        return mStack.isEmpty();
     }
 
-    @Override
+    // TOSTRING
     public String toString() {
-        return stack.toString();
+        return mStack.toString();
     }
 }

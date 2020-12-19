@@ -1,193 +1,208 @@
 package DataStructuresPackage;
 
-/*
- *Single Linked List 
- *Implements LinkedList Interface 
- */
-public class SingleLinkedList<T> implements LinkedList<T> {
+public class SingleLinkedList<T> {
 
-    private SLLNode<T> mHead, mTail;// nodes for the head and tail of the linked list
-    private int mLength;// how many elements are in the linked list
+    class SLLNode {
 
-    // default Constructor
+        private T mData;// data stored in this node
+        private SLLNode mNext;// next item in the list
+
+        // default constructor
+        public SLLNode() {
+            this.mData = null;// set data to null
+            this.mNext = null;// set next to null
+
+        }
+
+        // constructor passing data
+        public SLLNode(T data) {
+            this.mData = data;// set the data to the date
+            this.mNext = null;// set next to null
+
+        }
+        // GETTERS
+
+        public SLLNode getNext() {
+            return mNext;// return next item
+        }
+
+        public T getData() {
+            return mData;// return the data
+        }
+
+        // SETTERS
+        public void setNext(SLLNode next) {
+            mNext = next;// set the next item
+        }
+
+        public void setData(T data) {
+            mData = data;// set the data
+        }
+
+    }
+
+    private SLLNode mHead;
+    private int mLength;
+
     public SingleLinkedList() {
-        this.mHead = null;// set head to null
-        this.mTail = null;// set tail to null
-        this.mLength = 0;// set length to 0
+        this.mHead = null;
+        setLength(0);
     }
 
     public SingleLinkedList(T data) {
-        this.insert(data);
+        this.mHead = new SLLNode(data);
+        setLength(1);
     }
 
-    // insert
+    // INSERT
 
-    // this method does the heavy lifting, it is this method that is called in all
-    // other overloaded versions of insert
-    @Override
-    public void insert(SLLNode<T> newNode, int position) throws Exception {
-        // TODO Auto-generated method stub
+    // Puts the new node in place given a previous and next pointer
+    private void insertNode(SLLNode newNode, SLLNode prev, SLLNode next) {
+        newNode.setNext(next);
+
+        if (prev != null)
+            prev.setNext(newNode);
+
+        if (isEmpty() || next == getHead())
+            setHead(newNode);
+
+        setLength(getLength() + 1);
+    }
+
+    // validates and finds the position where the new node should be added
+    private void insert(SLLNode newNode, int position) throws Exception {
 
         if (position > getLength())// if the desired position is outside the bounds of the list
             throw new Exception(
-                    "ERROR: Invalid Position: " + position + " REASON:  List not Big Enough. Size:  " + getLength());// throw
-                                                                                                                     // an
-                                                                                                                     // exception
+                    "ERROR: Invalid Position: " + position + " REASON:  List is not Big Enough. Size: " + getLength());// throw
+                                                                                                                       // an
+                                                                                                                       // exception
         else if (position < 0)// if position is negative
-            throw new Exception("ERROR: Invalid Position: " + position);// throw an exception
+            throw new Exception("ERROR: Invalid Position: " + position + " REASON: Position Cannot Be Negative.");// throw
+                                                                                                                  // an
+                                                                                                                  // exception
 
-        if (position == 0) {// insert at the start of the list
-            newNode.setNext(getHead());// set newNode next node
-            setHead(newNode);// set the head to the new node
-            if (getLength() == 0)// if the list is empty
-                setTail(newNode);// set the tail to new node
+        int count = 0;
+        SLLNode prev = null;
+        SLLNode next = getHead();
 
-            setLength(getLength() + 1);// increment length by 1
-        } else if (position < getLength()) {// position is somewhere in the middle of the list
-            int count = 0;// set a counter to 0
-            SLLNode<T> previous = null;// set previous to null
-            SLLNode<T> next = getHead();// set next to the head of the list
-
-            while (count < position) {// while the count is less than the position
-                if (next == null)
-                    throw new NullPointerException("ERROR: Ran out of list");
-                previous = next;// move previous to the next
-                next = previous.getNext();// get the item after previous
-                count++;// increment count
-
-            }
-            newNode.setNext(next);// set newNode's next to next
-            previous.setNext(newNode);// set previous' next to newNode
-            setLength(getLength() + 1);// increment size by 1
-        } else {// position is at the end of the list
-            getTail().setNext(newNode);// set tails' next node to newNode
-            setTail(newNode);// set tail to newNode
-            getTail().setNext(null);// set tail' next node to null
-            setLength(getLength() + 1);// increment length by 1
+        while (count < position) {
+            if (next == null)
+                throw new NullPointerException("Ran Out of List");
+            prev = next;
+            next = next.getNext();
+            count++;
         }
+        insertNode(newNode, prev, next);
     }
 
-    // calls insert method creating new node in the process
-    @Override
+    // given the data to be added and the position, attempt to add the data at
+    // position
     public void insert(T data, int position) {
-        // TODO Auto-generated method stub
         try {
-            insert(new SLLNode<T>(data), position);// attempt to insert data at given position
-        } catch (Exception e) {// catch thrown exception if fails
-            System.err.println(e.getMessage());// print fail message
+            insert(new SLLNode(data), position);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 
-    // default inserts at start of list
-    @Override
-    public void insert(SLLNode<T> newNode) {
-        // TODO Auto-generated method stub
-        try {
-            this.insert(newNode, 0);// attempt to insert data at given position
-        } catch (Exception e) {// catch thrown exception if fails
-            System.err.println(e.getMessage());// print fail message
-        }
-
-    }
-
-    // default inserts at start of list
-    @Override
+    // default insert add at start
     public void insert(T data) {
-        // TODO Auto-generated method stub
-        this.insert(data, 0);// insert data
+        insert(data, 0);
     }
 
-    // delete
-    private SLLNode<T> delete(int position, SLLNode<T> start) throws Exception {
-        if (position > getLength() || position < 0)// checks to see if position is valid
-            throw new Exception("ERROR: Invalid Node to Delete: " + position);// throws exception if position is not
-                                                                              // valid
+    // DELETE
+    // moves the pointer so deleteNode is ready to be deleted
+    private void deleteNode(SLLNode deleteNode, SLLNode prev) {
+        if (prev != null)
+            prev.setNext(deleteNode.getNext());
 
-        if (getLength() == 0)// checks if list is empty
-            throw new Exception("ERROR: List is Empty");// throws exception if list is empty
-
-        SLLNode<T> deleteNode = null;// set deleteNode to null
-        if (position == 0) {// delete item at front of list
-            deleteNode = start;// set deleteNode to start
-            setHead(deleteNode.getNext());// set the new head
-            if (getLength() == 1)// if the list is one item long
-                setTail(deleteNode.getNext());// move the tail back
-            deleteNode.setNext(null);// delete node points to nothing ready to be deleted
-        } else if (position < getLength()) {// item is in the middle of the list
-            int count = 0;// counter set to 0
-            deleteNode = start;// delete node set to start
-            SLLNode<T> previous = null, next = deleteNode.getNext();// previous set to null, next set to item after
-                                                                    // deleteNode
-
-            while (count < position) {// while the position has not been found
-                if (next == null)// if next is null
-                    throw new NullPointerException(
-                            "ERROR: Unable to Delete Item at Position " + position + " REASON: List Ended");// throw an
-                                                                                                            // exception
-                // move all pointers up one position
-                previous = deleteNode;// previous set to deleteNode
-                deleteNode = previous.getNext();// deleteNode set to next node
-                next = deleteNode.getNext();// next set to two nodes after previous
-                count++;// increment count
-            }
-            previous.setNext(next);// move previous' next pointer to next
-            deleteNode.setNext(null);// set deleteNode's next pointer to null ready to be deleted
-        } else {// item is at the end
-            deleteNode = getTail();// deleteNode set to the tail
-            SLLNode<T> previous = start;// previous set to the start
-
-            while (previous.getNext() != deleteNode)// search for deleteNode should be at the end of the list
-            {
-                if (previous.getNext() == null)// if deleteNode is never found
-                    throw new NullPointerException("ERROR: Delete Node Never Found");// throw an exception
-                previous = previous.getNext();// move pointer along
-            }
-            // previous should be 1 node behind tail
-            setTail(previous);// move tail back 1 node
-            previous.setNext(null);// set previous' next pointer to null
+        if (deleteNode == getHead()) {
+            setHead(deleteNode.getNext());
         }
-
-        return deleteNode;// return deleteNode
+        deleteNode.setNext(null);
+        setLength(getLength() - 1);
     }
 
-    @Override
+    // delete function that does the heavy lifting
+    // finds the delete node and node before the delete node
+    private SLLNode delete(SLLNode start, int position) throws Exception {
+        boolean invalidPosition = !(position >= 0 && position < getLength());
+
+        if (isEmpty())
+            throw new Exception("List is empty");
+        else if (invalidPosition)
+            throw new Exception("Invalid Position: " + position);
+
+        SLLNode deleteNode = start;
+        SLLNode prev = null;
+        int count = 0;
+
+        while (count < position) {
+            if (deleteNode == null)
+                throw new NullPointerException("List Ends at Position: " + count);
+            prev = deleteNode;
+            deleteNode = deleteNode.getNext();
+            count++;
+        }
+        deleteNode(deleteNode, prev);
+
+        return deleteNode;
+    }
+
+    // delete an item at a given position
     public T delete(int position) {
-        // TODO Auto-generated method stub
-        T data = null;// data set to null
-        try {// attempt to delete the item at position
-            SLLNode<T> deleteNode = delete(position, getHead());// find the delete node
-            data = deleteNode.getData();// get data from delete node
-            deleteNode = null;// delete the node
-            setLength(getLength() - 1);// decrement the length by 1
-        } catch (Exception e) {// if deleting the node fails
-            System.out.println(e.getMessage());// print the error
+        T data = null;
+        try {
+            SLLNode deleteNode = delete(getHead(), position);
+            data = deleteNode.getData();
+            deleteNode = null;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-
-        return data;// return the data
+        return data;
     }
 
-    // default delete removes the front of the list
-    @Override
+    // default delete function removes item at position 0
     public T delete() {
-        // TODO Auto-generated method stub
         return delete(0);
     }
 
-    // peek
+    public T delete(T searchValue) {
+        T data = null;
+        int position = search(searchValue);
+
+        if (position != -1)
+            data = delete(position);
+        return data;
+    }
+
+    // HELPER FUNCTIONS
+
+    public boolean isEmpty() {
+        return getLength() == 0;
+    }
+
     public T peek(int position) throws Exception {
-        if (position > getLength() || position < 0)// if the position is invalid
-            throw new Exception("ERROR: Invalid Position: " + position);// throw an exception
-        int count = 0;// set counter
-        SLLNode<T> node = getHead();// node with data
-        while (count < position) {// while count is less than the desired position
-            if (node == null)// if node is null
-                throw new NullPointerException(
-                        "ERROR: Item not found at " + position + " Node " + count + " does not exist");// throw an
-                                                                                                       // exception
-            node = node.getNext();// get the next node
-            count++;// increment count
+        T data = null;
+        boolean invalidPosition = !(position >= 0 && position < getLength());
+
+        if (isEmpty())
+            throw new Exception("List is empty");
+        else if (invalidPosition)
+            throw new Exception("Invalid Position: " + position);
+
+        SLLNode trav = getHead();
+        int count = 0;
+        while (count < position) {
+            if (trav == null)
+                throw new NullPointerException("List Ends at " + count);
+            trav = trav.getNext();
+            count++;
         }
-        return node.getData();// return the data
+        data = trav.getData();
+
+        return data;
     }
 
     public T peek() {
@@ -198,53 +213,56 @@ public class SingleLinkedList<T> implements LinkedList<T> {
             System.err.println(e.getMessage());
         }
         return data;
+    }
 
+    public int search(T value) {
+        if (isEmpty())
+            return -1;
+
+        int count = 0;
+        SLLNode trav = getHead();
+
+        while (trav != null) {
+            if (trav.getData().equals(value))
+                return count;
+            trav = trav.getNext();
+            count++;
+        }
+
+        return -1;
     }
 
     // GETTERS
+    private SLLNode getHead() {
+        return mHead;
+    }
 
     public int getLength() {
-        return this.mLength;
-    }
-
-    private SLLNode<T> getHead() {
-        return this.mHead;
-    }
-
-    private SLLNode<T> getTail() {
-        return this.mTail;
+        return mLength;
     }
 
     // SETTERS
-    private void setHead(SLLNode<T> newHead) {
+    private void setHead(SLLNode newHead) {
         this.mHead = newHead;
-    }
-
-    private void setTail(SLLNode<T> newTail) {
-        this.mTail = newTail;
     }
 
     private void setLength(int newLength) {
         this.mLength = newLength;
     }
 
-    // isempty
-    @Override
-    public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return getLength() == 0;
-    }
-
     // TOSTRING
     @Override
     public String toString() {
-        String returnString = "[";// start of return string
-        SLLNode<T> start = getHead();// start at the head
-        while (start != null) {// read the entire list
-            returnString += " " + start.getData().toString() + " ";// append data to the string
-            start = start.getNext();// get the next item
+
+        if (isEmpty())
+            return "[]";
+
+        String returnString = "[ ";
+        SLLNode trav = getHead();
+        while (trav != null) {
+            returnString += trav.getData() + "=>";
+            trav = trav.getNext();
         }
-        returnString += "]";// close the string
-        return returnString;// return the string
+        return returnString + "null ]";
     }
 }
